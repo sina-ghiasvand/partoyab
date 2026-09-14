@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>محصول — پرتویاب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-mark" href="index.html">پرتویاب</a>
+  <div class="nav-links">
+    <a href="index.html">خانه</a>
+    <a href="product.html">محصول</a>
+    <a href="about.html">درباره</a>
+  </div>
+</nav>
+
+<div id="bg-root"></div>
+
+<main>
+  <section class="page-header">
+    <h1>پرتویاب</h1>
+    <p>ردیاب لیزری فرستنده‌های فضایی، ساخته‌شده برای مأموریت‌های اکتشاف و نجات.</p>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <h2>چگونه کار می‌کند</h2>
+      <p>پرتویاب یک پرتو لیزر باریک به سمت سیگنال فرستنده منتشر می‌کند و با تحلیل بازتاب و زاویه‌ی دریافتی، جهت و فاصله‌ی دقیق فرستنده را روی نمایشگر دستگاه نشان می‌دهد. فضانورد می‌تواند با یک دست، در فضای باز یا داخل سفینه، دستگاه را هدف‌گیری و فعال کند.</p>
+
+      <svg class="how-diagram" viewBox="0 0 600 220" role="img" aria-label="نمودار عملکرد: فضانورد پرتو لیزر را به سمت فرستنده هدایت می‌کند">
+        <defs>
+          <marker id="diagArrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M1 1L8 5L1 9Z" fill="#ffb648"/>
+          </marker>
+        </defs>
+        <g transform="translate(100,110)">
+          <circle r="26" class="diag-pulse" fill="none" stroke="#6fe3ff" stroke-width="1.5" opacity="0.5"/>
+          <circle r="10" fill="#6fe3ff"/>
+          <text y="46" text-anchor="middle" class="diag-label">فرستنده</text>
+        </g>
+        <line x1="440" y1="105" x2="130" y2="110" stroke="#ffb648" stroke-width="2.5" stroke-dasharray="8 6" marker-end="url(#diagArrow)"/>
+        <text x="285" y="88" text-anchor="middle" class="diag-label">پرتو لیزر</text>
+        <g transform="translate(480,100)">
+          <circle cx="0" cy="-30" r="20" fill="#cbd3e6"/>
+          <rect x="-24" y="-8" width="48" height="55" rx="14" fill="#8b93ab"/>
+          <text y="72" text-anchor="middle" class="diag-label">فضانورد</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="section-inner">
+      <h2>ویژگی‌ها</h2>
+      <div class="grid">
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>
+          <h3>دقت مکان‌یابی بالا</h3>
+          <p>خطای مکان‌یابی کمتر از ۲ درجه، حتی در فاصله‌های دور.</p>
+        </div>
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="8" width="16" height="11" rx="2"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>
+          <h3>طراحی سبک و قابل‌حمل</h3>
+          <p>وزن ۸۵۰ گرمی، مناسب برای دستکش فضانوردی و کوله‌ی ابزار EVA.</p>
+        </div>
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6l7-3z"/></svg>
+          <h3>مقاوم در برابر شرایط فضا</h3>
+          <p>عملکرد پایدار از منفی ۱۰۰ تا مثبت ۱۲۰ درجه‌ی سانتی‌گراد.</p>
+        </div>
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="8" width="15" height="8" rx="1.5"/><path d="M18 10.5h2v3h-2"/><rect x="5.5" y="10" width="7" height="4" fill="currentColor" stroke="none"/></svg>
+          <h3>باتری بادوام</h3>
+          <p>تا ۶ ساعت کارکرد پیوسته در یک شارژ کامل.</p>
+        </div>
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/></svg>
+          <h3>رابط ساده</h3>
+          <p>یک دکمه برای فعال‌سازی؛ نمایشگر واضح برای زاویه و فاصله.</p>
+        </div>
+        <div class="card">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 13a10 10 0 0 1 14 0"/><path d="M8.5 16.5a5.5 5.5 0 0 1 7 0"/><circle cx="12" cy="19.5" r="1.1" fill="currentColor" stroke="none"/></svg>
+          <h3>اتصال به سامانه‌ی سفینه</h3>
+          <p>انتقال بی‌سیم مختصات به کامپیوتر سفینه.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <h2>مشخصات فنی</h2>
+      <table class="spec-table">
+        <tr><td>وزن</td><td>۸۵۰ گرم</td></tr>
+        <tr><td>ابعاد</td><td>۲۴ × ۹ × ۷ سانتی‌متر</td></tr>
+        <tr><td>برد مکان‌یابی</td><td>تا ۲ کیلومتر</td></tr>
+        <tr><td>دقت زاویه‌ای</td><td>± ۲ درجه</td></tr>
+        <tr><td>دمای عملکرد</td><td>−۱۰۰ تا +۱۲۰ درجه‌ی سانتی‌گراد</td></tr>
+        <tr><td>عمر باتری</td><td>۶ ساعت کارکرد پیوسته</td></tr>
+        <tr><td>نوع باتری</td><td>قابل‌شارژ و تعویض‌پذیر</td></tr>
+        <tr><td>سازگاری</td><td>قابل‌استفاده با دستکش استاندارد فضانوردی</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="section-inner">
+      <h2>کاربردها</h2>
+      <ul class="list-clean">
+        <li>پیدا کردن تجهیزات یا ماهواره‌های ازکارافتاده که سیگنال ضعیف می‌فرستند</li>
+        <li>کمک به عملیات جست‌وجو و نجات در شرایط اضطراری</li>
+        <li>راهنمایی دقیق برای داک شدن با کمک سیگنال ترانسپاندر</li>
+        <li>ردیابی محموله‌ها و کپسول‌های رهاشده در فضا</li>
+      </ul>
+      <div class="section-cta">
+        <a class="btn" href="about.html">بیشتر درباره‌ی پرتویاب بدانید</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>پرتویاب — ابزار مکان‌یابی لیزری برای مأموریت‌های فضایی</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
