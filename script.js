@@ -1,213 +1,199 @@
-/* ------------------------------------------------------------------
-   solar.js  –  رندر و انیمیشن منظومه‌ خورشیدی
-   نسخهٔ بهبود یافته:  ES6, ماژولار, دسترسی‌پذیر, کاهش globals
-------------------------------------------------------------------- */
+(function(){
+  var BG_HTML = '' +
+  '<svg id="solar-svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">' +
+    '<defs>' +
+      '<radialGradient id="sunCore" cx="35%" cy="30%" r="70%"><stop offset="0%" stop-color="#fff6da"/><stop offset="45%" stop-color="#ffcf5c"/><stop offset="100%" stop-color="#ff9a2e"/></radialGradient>' +
+      '<radialGradient id="sunHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffcf5c" stop-opacity="0.55"/><stop offset="100%" stop-color="#ffcf5c" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="earthGrad" cx="32%" cy="28%" r="75%"><stop offset="0%" stop-color="#bfe3ff"/><stop offset="55%" stop-color="#2f6fd6"/><stop offset="100%" stop-color="#12356e"/></radialGradient>' +
+      '<radialGradient id="earthHalo" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#6fb4ff" stop-opacity="0.45"/><stop offset="100%" stop-color="#6fb4ff" stop-opacity="0"/></radialGradient>' +
+      '<radialGradient id="saturnGrad" cx="32%" cy="28%" r="75%"><stop offset="0%" stop-color="#fff3d6"/><stop offset="60%" stop-color="#e8c88d"/><stop offset="100%" stop-color="#a9824e"/></radialGradient>' +
+      '<linearGradient id="trailGold" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#ffb648" stop-opacity="0"/><stop offset="100%" stop-color="#ffe7b0" stop-opacity="0.95"/></linearGradient>' +
+      '<linearGradient id="trailCyan" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6fe3ff" stop-opacity="0"/><stop offset="100%" stop-color="#d6f7ff" stop-opacity="0.95"/></linearGradient>' +
+      '<marker id="arrowGold" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L8 5L1 9Z" fill="#ffb648"/></marker>' +
+      '<marker id="arrowCyan" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1L8 5L1 9Z" fill="#6fe3ff"/></marker>' +
+    '</defs>' +
+    '<g id="stars"></g>' +
+    '<g id="orbits" fill="none" stroke="#ffffff">' +
+      '<circle cx="500" cy="500" r="78" opacity="0.14"/>' +
+      '<circle cx="500" cy="500" r="115" opacity="0.10"/>' +
+      '<circle cx="500" cy="500" r="158" opacity="0.18"/>' +
+      '<circle cx="500" cy="500" r="195" opacity="0.10"/>' +
+      '<circle cx="500" cy="500" r="260" opacity="0.10"/>' +
+      '<circle cx="500" cy="500" r="325" opacity="0.18"/>' +
+      '<circle cx="500" cy="500" r="375" opacity="0.10"/>' +
+      '<circle cx="500" cy="500" r="425" opacity="0.10"/>' +
+    '</g>' +
+    '<line id="path-em" x1="500" y1="500" x2="500" y2="500" stroke="#ffb648" stroke-width="2" stroke-dasharray="9 7" fill="none" opacity="0.9" marker-end="url(#arrowGold)"/>' +
+    '<line id="path-es" x1="500" y1="500" x2="500" y2="500" stroke="#6fe3ff" stroke-width="2" stroke-dasharray="9 7" fill="none" opacity="0.9" marker-end="url(#arrowCyan)"/>' +
+    '<g id="traveler-em" class="traveler"><ellipse cx="-9" cy="0" rx="11" ry="2.2" fill="url(#trailGold)"/><circle cx="1" cy="0" r="3.4" fill="#fff1cf"/></g>' +
+    '<g id="traveler-es" class="traveler"><ellipse cx="-9" cy="0" rx="11" ry="2.2" fill="url(#trailCyan)"/><circle cx="1" cy="0" r="3.4" fill="#eafcff"/></g>' +
+    '<g id="sun-group" transform="translate(500,500)"><circle r="95" fill="url(#sunHalo)"/><circle r="40" fill="url(#sunCore)"/></g>' +
+    '<g id="planet-mercury" class="planet"><circle r="5" class="pulse pulse-gold"/><circle r="5" fill="#b7b0a6"/><text y="17" class="label label-strong">عطارد</text></g>' +
+    '<g id="planet-venus" class="planet"><circle r="8" fill="#e7c896"/><text y="20" class="label label-soft">زهره</text></g>' +
+    '<g id="planet-earth" class="planet"><circle r="15" fill="url(#earthHalo)"/><circle r="9" fill="url(#earthGrad)"/><circle cx="-2" cy="-3" r="2.2" fill="#ffffff" opacity="0.55"/><circle cx="2.5" cy="2" r="1.6" fill="#ffffff" opacity="0.4"/><text y="24" class="label label-strong">زمین</text></g>' +
+    '<g id="planet-mars" class="planet"><circle r="6" fill="#c1440e"/><text y="19" class="label label-soft">مریخ</text></g>' +
+    '<g id="planet-jupiter" class="planet"><circle r="19" fill="#d3ac7c"/><ellipse rx="18" ry="3" fill="#8a5a34" opacity="0.3" transform="translate(0,-7)"/><ellipse rx="18" ry="3" fill="#8a5a34" opacity="0.25" transform="translate(0,6)"/><text y="33" class="label label-soft">مشتری</text></g>' +
+    '<g id="planet-saturn" class="planet"><ellipse rx="29" ry="8.5" fill="none" stroke="#d9c38a" stroke-width="3" opacity="0.85" transform="rotate(-24)"/><circle r="16" class="pulse pulse-cyan"/><circle r="16" fill="url(#saturnGrad)"/><text y="36" class="label label-strong">زحل</text></g>' +
+    '<g id="planet-uranus" class="planet"><circle r="12" fill="#9fd8e0"/><text y="26" class="label label-soft">اورانوس</text></g>' +
+    '<g id="planet-neptune" class="planet"><circle r="12" fill="#3f5fd0"/><text y="26" class="label label-soft">نپتون</text></g>' +
+  '</svg>';
 
-const NS = 'http://www.w3.org/2000/svg';
-const CENTER = { x: 500, y: 500 };
-const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)')
-  .matches;
-
-/* ---------- داده‌های ثابت ---------- */
-const PLANETS = [
-  { id: 'mercury', distance: 78,  period: 5200,   angle: 0.4, r: 5,  label: 'عطارد' },
-  { id: 'venus',   distance: 115, period: 8200,   angle: 1.3, r: 8,  label: 'زهره' },
-  { id: 'earth',   distance: 158, period: 13500,  angle: 2.4, r: 9,  label: 'زمین' },
-  { id: 'mars',    distance: 195, period: 20500,  angle: 3.6, r: 6,  label: 'مریخ' },
-  { id: 'jupiter', distance: 260, period: 46000,  angle: 4.5, r: 19, label: 'مشتری' },
-  { id: 'saturn',  distance: 325, period: 76000,  angle: 5.4, r: 16, label: 'زحل' },
-  { id: 'uranus',  distance: 375, period: 112000, angle: 0.9, r: 12, label: 'اورانوس' },
-  { id: 'neptune', distance: 425, period: 148000, angle: 2.9, r: 12, label: 'نپتون' }
-];
-
-const FACTS = {
-  mercury: 'نزدیک‌ترین سیاره به خورشید؛ یک روزش از یک سالش هم طولانی‌تره.',
-  venus:   'داغ‌ترین سیاره‌ی منظومه‌ی شمسی، به‌خاطر جو غلیظ دی‌اکسید کربنی‌اش.',
-  earth:   'خانه‌ی ماست؛ مبدأ همه‌ی مأموریت‌های پرتویاب.',
-  mars:    'به سیاره‌ی سرخ معروفه؛ رنگش از اکسید آهن خاک سطحشه.',
-  jupiter: 'بزرگ‌ترین سیاره‌ی منظومه؛ بیش از هزار زمین توش جا می‌شود.',
-  saturn:  'حلقه‌های زحل از میلیون‌ها تکه‌ی یخ و سنگ ساخته شدن.',
-  uranus:  'این سیاره تقریباً افتاده و به‌پهلو دور خورشید می‌چرخه.',
-  neptune: 'دورترین سیاره‌ی رسمی از خورشید؛ بادهاش سریع‌ترین بادهای منظومه‌ست.'
-};
-
-/* ---------- کمکی‌ها ---------- */
-const easeInOut = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-const lerp = (a, b, t) => a + (b - a) * t;
-
-/* ---------- ساخت عناصر ثابت ---------- */
-function createStar() {
-  const s = document.createElementNS(NS, 'circle');
-  s.setAttribute('cx', (Math.random() * 1000).toFixed(1));
-  s.setAttribute('cy', (Math.random() * 1000).toFixed(1));
-  s.setAttribute('r', (Math.random() * 1.3 + 0.3).toFixed(2));
-  s.setAttribute('fill', '#fff');
-  s.setAttribute('opacity', (Math.random() * 0.55 + 0.2).toFixed(2));
-  if (!REDUCED && Math.random() < 0.3) s.classList.add('twinkle');
-  if (!REDUCED) s.style.animationDelay = `${(Math.random() * 3).toFixed(2)}s`;
-  return s;
-}
-
-/* ---------- رندر پس‌زمینه ---------- */
-export function injectBackground(rootId = 'bg-root') {
-  const root = document.getElementById(rootId);
-  if (!root) return;
-  root.className = 'bg-solar';
-  root.setAttribute('aria-hidden', 'true');
-  root.innerHTML = BG_HTML;               // BG_HTML همان SVG طولانی شماست
-}
-
-/* ---------- راه‌اندازی منظومه‌ خورشیدی ---------- */
-export function initSolarSystem(svgId = 'solar-svg') {
-  const svg = document.getElementById(svgId);
-  if (!svg) return;
-
-  /* --- عناصر ثابت را یکبار بخوانید (به‌جای getElementById در هر فریم) --- */
-  const starsGroup = svg.querySelector('#stars');
-  const planetEls = {};
-  PLANETS.forEach(p => (planetEls[p.id] = svg.querySelector(`#planet-${p.id}`)));
-  const pathEM = svg.querySelector('#path-em');
-  const pathES = svg.querySelector('#path-es');
-  const travelerEM = svg.querySelector('#traveler-em');
-  const travelerES = svg.querySelector('#traveler-es');
-  const caption = document.getElementById('caption');
-
-  /* --- ستارگان --- */
-  if (!REDUCED) {
-    for (let i = 0; i < 110; i++) starsGroup.appendChild(createStar());
+  function injectBackground(){
+    var root = document.getElementById('bg-root');
+    if (!root) return;
+    root.className = 'bg-solar';
+    root.setAttribute('aria-hidden', 'true');
+    root.innerHTML = BG_HTML;
   }
 
-  /* --- وضعیت پویا --- */
-  const positions = {};                     // {x, y} برای هر سیاره
-  const traveler = {
-    em: {elapsed: 0, dur: 3000},
-    es: {elapsed: 0, dur: 4400}
-  };
-  let boostUntil = 0;
-  let lastTimestamp = null;
-  let running = true;                      // برای pause / resume
+  function initSolarSystem(){
+    var svg = document.getElementById('solar-svg');
+    if (!svg) return;
 
-  /* ---------- خطوط مسیری */ 
-  function trimLine(el, a, ra, b, rb) {
-    const dx = b.x - a.x, dy = b.y - a.y;
-    const dist = Math.hypot(dx, dy) || 1;
-    const ux = dx / dist, uy = dy / dist;
-    el.setAttribute('x1', (a.x + ux * ra).toFixed(1));
-    el.setAttribute('y1', (a.y + uy * ra).toFixed(1));
-    el.setAttribute('x2', (b.x - ux * rb).toFixed(1));
-    el.setAttribute('y2', (b.y - uy * rb).toFixed(1));
-  }
+    var center = {x:500, y:500};
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var NS = 'http://www.w3.org/2000/svg';
 
-  /* ---------- حرکت مسافران ---------- */
-  function placeTraveler(el, from, to, tRaw) {
-    const t = REDUCED ? 0.5 : easeInOut(tRaw);
-    const x = lerp(from.x, to.x, t);
-    const y = lerp(from.y, to.y, t);
-    const deg = Math.atan2(to.y - from.y, to.x - from.x) * 180 / Math.PI;
-
-    el.setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${deg.toFixed(1)})`);
-    const opacity = REDUCED ? 0.85 : Math.max(0.12, Math.sin(Math.PI * tRaw));
-    el.setAttribute('opacity', opacity.toFixed(2));
-  }
-
-  /* ---------- به‌روزرسانی هر فریم ---------- */
-  function update(timestamp) {
-    if (!running) { requestAnimationFrame(update); return; }
-
-    if (lastTimestamp === null) lastTimestamp = timestamp;
-    const dt = timestamp - lastTimestamp;   // میلی‌ثانیه
-    lastTimestamp = timestamp;
-
-    /* موقعیت سیارات */
-    PLANETS.forEach(p => {
-      const ang = p.angle + (REDUCED ? 0 : (timestamp / p.period) * Math.PI * 2);
-      const x = CENTER.x + p.distance * Math.cos(ang);
-      const y = CENTER.y + p.distance * Math.sin(ang);
-      positions[p.id] = { x, y };
-      planetEls[p.id].setAttribute('transform', `translate(${x.toFixed(1)},${y.toFixed(1)})`);
-    });
-
-    /* خطوط مسیر */
-    const e = positions.earth, m = positions.mercury, s = positions.saturn;
-    trimLine(pathEM, e, 9, m, 5);
-    trimLine(pathES, e, 9, s, 16);
-
-    /* مسافران */
-    if (REDUCED) {
-      placeTraveler(travelerEM, e, m, 0.5);
-      placeTraveler(travelerES, e, s, 0.5);
-    } else {
-      const speed = timestamp < boostUntil ? 2.6 : 1;
-      traveler.em.elapsed = (traveler.em.elapsed + dt * speed) % traveler.em.dur;
-      traveler.es.elapsed = (traveler.es.elapsed + dt * speed) % traveler.es.dur;
-      placeTraveler(travelerEM, e, m, traveler.em.elapsed / traveler.em.dur);
-      placeTraveler(travelerES, e, s, traveler.es.elapsed / traveler.es.dur);
+    var starsGroup = document.getElementById('stars');
+    for (var i=0; i<110; i++){
+      var st = document.createElementNS(NS,'circle');
+      st.setAttribute('cx', (Math.random()*1000).toFixed(1));
+      st.setAttribute('cy', (Math.random()*1000).toFixed(1));
+      st.setAttribute('r', (Math.random()*1.3+0.3).toFixed(2));
+      st.setAttribute('fill', '#ffffff');
+      st.setAttribute('class', 'star' + (!reduceMotion && Math.random()<0.3 ? ' twinkle' : ''));
+      st.setAttribute('opacity', (Math.random()*0.55+0.2).toFixed(2));
+      if (!reduceMotion){ st.style.animationDelay = (Math.random()*3).toFixed(2)+'s'; }
+      starsGroup.appendChild(st);
     }
 
-    requestAnimationFrame(update);
-  }
+    var planets = [
+      {id:'mercury', distance:78,  period:5200,   angle:0.4, r:5},
+      {id:'venus',   distance:115, period:8200,   angle:1.3, r:8},
+      {id:'earth',   distance:158, period:13500,  angle:2.4, r:9},
+      {id:'mars',    distance:195, period:20500,  angle:3.6, r:6},
+      {id:'jupiter', distance:260, period:46000,  angle:4.5, r:19},
+      {id:'saturn',  distance:325, period:76000,  angle:5.4, r:16},
+      {id:'uranus',  distance:375, period:112000, angle:0.9, r:12},
+      {id:'neptune', distance:425, period:148000, angle:2.9, r:12}
+    ];
 
-  /* ---------- تعامل کاربر (کلیک روی سیاره) ---------- */
-  function onPlanetClick(id) {
-    if (caption) caption.textContent = FACTS[id] || '';
-    if (id === 'earth') boost();          // در صورت کلیک روی زمین، boost اجرا می‌شود
-  }
+    var positions = {};
+    function ease(t){ return t<0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+    function lerp(a,b,t){ return a+(b-a)*t; }
 
-  function boost() {
-    boostUntil = performance.now() + 1600;
-    pathEM.classList.add('boost');
-    pathES.classList.add('boost');
-    setTimeout(() => {
-      pathEM.classList.remove('boost');
-      pathES.classList.remove('boost');
-    }, 700);
-  }
+    function trimLine(id, a, ra, b, rb){
+      var dx=b.x-a.x, dy=b.y-a.y;
+      var dist=Math.sqrt(dx*dx+dy*dy)||1;
+      var ux=dx/dist, uy=dy/dist;
+      var el=document.getElementById(id);
+      el.setAttribute('x1',(a.x+ux*ra).toFixed(1));
+      el.setAttribute('y1',(a.y+uy*ra).toFixed(1));
+      el.setAttribute('x2',(b.x-ux*rb).toFixed(1));
+      el.setAttribute('y2',(b.y-uy*rb).toFixed(1));
+    }
 
-  /* افزودن ویژگی‌های دسترسی‌پذیری به هر سیاره */
-  PLANETS.forEach(p => {
-    const el = planetEls[p.id];
-    if (!el) return;
-    el.setAttribute('role', 'button');
-    el.setAttribute('tabindex', '0');
-    el.setAttribute('aria-label', `نمایش اطلاعات ${p.label}`);
-    el.addEventListener('click', () => onPlanetClick(p.id));
-    el.addEventListener('keydown', e => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        onPlanetClick(p.id);
+    function placeTraveler(id, a, b, tRaw){
+      var t = ease(tRaw);
+      var grp = document.getElementById(id);
+      var x = lerp(a.x,b.x,t), y = lerp(a.y,b.y,t);
+      var deg = Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;
+      grp.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+') rotate('+deg.toFixed(1)+')');
+      var op = reduceMotion ? 0.85 : Math.max(0.12, Math.sin(Math.PI*tRaw));
+      grp.setAttribute('opacity', op.toFixed(2));
+    }
+
+    var travelEM=0, travelES=0;
+    var DUR_EM=3000, DUR_ES=4400;
+    var boostUntil=0;
+    var lastT=null;
+
+    function frame(now, dt){
+      planets.forEach(function(p){
+        var ang = p.angle + (reduceMotion ? 0 : (now/p.period)*Math.PI*2);
+        var x = center.x + p.distance*Math.cos(ang);
+        var y = center.y + p.distance*Math.sin(ang);
+        positions[p.id] = {x:x,y:y};
+        var g = document.getElementById('planet-'+p.id);
+        if (g) g.setAttribute('transform','translate('+x.toFixed(1)+','+y.toFixed(1)+')');
+      });
+
+      var e=positions.earth, m=positions.mercury, s=positions.saturn;
+      trimLine('path-em', e, 9, m, 5);
+      trimLine('path-es', e, 9, s, 16);
+
+      if (reduceMotion){
+        placeTraveler('traveler-em', e, m, 0.5);
+        placeTraveler('traveler-es', e, s, 0.5);
+      } else {
+        var speedMul = (now < boostUntil) ? 2.6 : 1;
+        travelEM = (travelEM + dt*speedMul) % DUR_EM;
+        travelES = (travelES + dt*speedMul) % DUR_ES;
+        placeTraveler('traveler-em', e, m, travelEM/DUR_EM);
+        placeTraveler('traveler-es', e, s, travelES/DUR_ES);
       }
-    });
-  });
-
-  /* ---------- کنترل pause / resume هنگام سوئیچ تب ---------- */
-  document.addEventListener('visibilitychange', () => {
-    running = !document.hidden;
-    if (running && !REDUCED) requestAnimationFrame(update);
-  });
-
-  /* ---------- شروع انیمیشن ---------- */
-  if (REDUCED) {
-    // فقط یک بار موقعیت‌ها را محاسبه می‌کنیم؛ هیچ انیمیشن پویا نیست
-    update(performance.now());
-  } else {
-    requestAnimationFrame(update);
-  }
-}
-
-/* ---------- فعال‌سازی ناوبری فعال ---------- */
-export function markActiveNav(navSelector = '.nav-links a') {
-  const currentPage = (location.pathname.split('/').pop() || 'index.html');
-  document.querySelectorAll(navSelector).forEach(a => {
-    a.removeAttribute('aria-current');
-    if (a.getAttribute('href') === currentPage) {
-      a.setAttribute('aria-current', 'page');
     }
-  });
-}
 
-/* ---------- راه‌اندازی در DOMContentLoaded ---------- */
-document.addEventListener('DOMContentLoaded', () => {
-  injectBackground();          // پیش‌فرض id = 'bg-root'
-  initSolarSystem();           // پیش‌فرض id = 'solar-svg'
-  markActiveNav();             // پیش‌فرض سلکتور .nav-links a
-});
+    if (reduceMotion){
+      frame(0,0);
+    } else {
+      (function tick(now){
+        if (lastT===null) lastT=now;
+        var dt = now-lastT; lastT=now;
+        frame(now, dt);
+        requestAnimationFrame(tick);
+      })();
+    }
+
+    var facts = {
+      mercury:'نزدیک‌ترین سیاره به خورشید؛ یک روزش از یک سالش هم طولانی‌تره.',
+      venus:'داغ‌ترین سیاره‌ی منظومه‌ی شمسی، به‌خاطر جو غلیظ دی‌اکسید کربنی‌اش.',
+      earth:'خانه‌ی ماست؛ مبدأ همه‌ی مأموریت‌های پرتویاب.',
+      mars:'به سیاره‌ی سرخ معروفه؛ رنگش از اکسید آهن خاک سطحشه.',
+      jupiter:'بزرگ‌ترین سیاره‌ی منظومه؛ بیش از هزار زمین توش جا می‌شه.',
+      saturn:'حلقه‌های زحل از میلیون‌ها تکه‌ی یخ و سنگ ساخته شدن.',
+      uranus:'این سیاره تقریبا افتاده و به‌پهلو دور خورشید می‌چرخه.',
+      neptune:'دورترین سیاره‌ی رسمی از خورشید؛ بادهاش سریع‌ترین بادهای منظومه‌ست.'
+    };
+
+    var caption = document.getElementById('caption');
+    var pathEM = document.getElementById('path-em');
+    var pathES = document.getElementById('path-es');
+
+    function boost(){
+      boostUntil = performance.now() + 1600;
+      pathEM.classList.add('boost');
+      pathES.classList.add('boost');
+      setTimeout(function(){
+        pathEM.classList.remove('boost');
+        pathES.classList.remove('boost');
+      }, 700);
+    }
+
+    function selectPlanet(id){
+      if (caption && facts[id]) caption.textContent = facts[id];
+      if (id === 'earth') boost();
+    }
+
+    planets.forEach(function(p){
+      var g = document.getElementById('planet-'+p.id);
+      if (!g) return;
+      g.addEventListener('click', function(){ selectPlanet(p.id); });
+    });
+  }
+
+  function markActiveNav(){
+    var page = (location.pathname.split('/').pop() || 'index.html');
+    var links = document.querySelectorAll('.nav-links a');
+    for (var i=0; i<links.length; i++){
+      var href = links[i].getAttribute('href');
+      if (href === page){ links[i].setAttribute('aria-current','page'); }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    injectBackground();
+    initSolarSystem();
+    markActiveNav();
+  });
+})();
