@@ -61,38 +61,34 @@
       </div>
     </div>
   </section>
+
+  <!-- کد فرم را اینجا قرار دهید -->
   <section class="newsletter">
     <div class="newsletter-content">
-        <h2>عضویت در خبرنامه پرتویاب</h2>
+      <h2>عضویت در خبرنامه پرتویاب</h2>
+      <p>برای دریافت مقالات و مطالب جدید فناوری‌های فضایی، ایمیل خود را ثبت کنید.</p>
 
-        <p>
-            برای دریافت مقالات و مطالب جدید فناوری‌های فضایی، ایمیل خود را ثبت کنید.
-        </p>
-
-        <form
-            action="https://formspree.io/f/xrpbpaeb"
-            method="POST"
-            class="newsletter-form"
+      <form
+        action="https://formspree.io/f/YOUR_FORM_ID"
+        method="POST"
+        class="newsletter-form"
+      >
+        <input
+          type="email"
+          name="email"
+          placeholder="ایمیل شما"
+          required
         >
-            <input
-                type="email"
-                name="email"
-                placeholder="ایمیل شما"
-                required
-            >
-
-            <input
-                type="hidden"
-                name="subject"
-                value="عضویت جدید در خبرنامه پرتویاب"
-            >
-
-            <button type="submit">
-                عضویت
-            </button>
-        </form>
+        <input
+          type="hidden"
+          name="subject"
+          value="عضویت جدید در خبرنامه پرتویاب"
+        >
+        <button type="submit">عضویت</button>
+      </form>
     </div>
-</section>
+  </section>
+
 </main>
 
 <footer class="site-footer">
