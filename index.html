@@ -64,30 +64,25 @@
 
   <!-- کد فرم را اینجا قرار دهید -->
   <section class="newsletter">
-    <div class="newsletter-content">
-      <h2>عضویت در خبرنامه پرتویاب</h2>
-      <p>برای دریافت مقالات و مطالب جدید فناوری‌های فضایی، ایمیل خود را ثبت کنید.</p>
-
-      <form
-        action="https://formspree.io/f/xrpbpaeb"
-        method="POST"
-        class="newsletter-form"
+  <div class="newsletter-content">
+    <h2>خبرنامه پرتویاب</h2>
+    <p>آخرین اخبار و محتوا را دریافت کنید</p>
+    
+    <form action="https://formspree.io/f/xrpbpaeb" method="POST" class="newsletter-form">
+      <label for="email">ایمیل شما:</label>
+      <input 
+        type="email" 
+        name="email" 
+        id="email"
+        placeholder="your@email.com"
+        required
       >
-        <input
-          type="email"
-          name="email"
-          placeholder="ایمیل شما"
-          required
-        >
-        <input
-          type="hidden"
-          name="subject"
-          value="عضویت جدید در خبرنامه پرتویاب"
-        >
-        <button type="submit">عضویت</button>
-      </form>
-    </div>
+      
+      <button type="submit">عضویت</button>
+    </form>
+  </div>
   </section>
+
   
 </main>
 
